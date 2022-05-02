@@ -14,6 +14,9 @@ import OrderRepository from "./order.repository";
 
 describe("Order repository test", () => {
   let sequelize: Sequelize;
+  let order: Order;
+  let product: Product;
+  let ordemItem: OrderItem;
 
   beforeEach(async () => {
     sequelize = new Sequelize({
@@ -30,13 +33,7 @@ describe("Order repository test", () => {
       ProductModel,
     ]);
     await sequelize.sync();
-  });
 
-  afterEach(async () => {
-    await sequelize.close();
-  });
-
-  it("should create a new order", async () => {
     const customerRepository = new CustomerRepository();
     const customer = new Customer("123", "Customer 1");
     const address = new Address("Street 1", 1, "Zipcode 1", "City 1");
@@ -44,10 +41,10 @@ describe("Order repository test", () => {
     await customerRepository.create(customer);
 
     const productRepository = new ProductRepository();
-    const product = new Product("123", "Product 1", 10);
+    product = new Product("123", "Product 1", 10);
     await productRepository.create(product);
 
-    const ordemItem = new OrderItem(
+    ordemItem = new OrderItem(
       "1",
       product.name,
       product.price,
@@ -55,8 +52,14 @@ describe("Order repository test", () => {
       2
     );
 
-    const order = new Order("123", "123", [ordemItem]);
+    order = new Order("123", "123", [ordemItem]);    
+  });
 
+  afterEach(async () => {
+    await sequelize.close();
+  });
+
+  it("should create a new order", async () => {
     const orderRepository = new OrderRepository();
     await orderRepository.create(order);
 
@@ -84,26 +87,6 @@ describe("Order repository test", () => {
 
 
   it("should update a order", async () => {
-    const customerRepository = new CustomerRepository();
-    const customer = new Customer("123", "Customer 1");
-    const address = new Address("Street 1", 1, "Zipcode 1", "City 1");
-    customer.changeAddress(address);
-    await customerRepository.create(customer);
-
-    const productRepository = new ProductRepository();
-    const product = new Product("123", "Product 1", 10);
-    await productRepository.create(product);
-
-    const ordemItem = new OrderItem(
-      "1",
-      product.name,
-      product.price,
-      product.id,
-      2
-    );
-
-    const order = new Order("123", "123", [ordemItem]);
-
     const orderRepository = new OrderRepository();
     await orderRepository.create(order);
 
@@ -144,26 +127,6 @@ describe("Order repository test", () => {
 
 
   it("should find a order", async () => {
-    const customerRepository = new CustomerRepository();
-    const customer = new Customer("321", "Customer 1");
-    const address = new Address("Street 1", 1, "Zipcode 1", "City 1");
-    customer.changeAddress(address);
-    await customerRepository.create(customer);
-
-    const productRepository = new ProductRepository();
-    const product = new Product("321", "Product 1", 10);
-    await productRepository.create(product);
-
-    const ordemItem = new OrderItem(
-      "1",
-      product.name,
-      product.price,
-      product.id,
-      2
-    );
-
-    const order = new Order("321", "321", [ordemItem]);
-
     const orderRepository = new OrderRepository();
     await orderRepository.create(order);
 
@@ -184,26 +147,6 @@ describe("Order repository test", () => {
   it("should find all orders", async () => {
     const orderRepository = new OrderRepository();
 
-    const customerRepository = new CustomerRepository();
-    const customer = new Customer("123", "Customer 1");
-    const address = new Address("Street 1", 1, "Zipcode 1", "City 1");
-    customer.changeAddress(address);
-    await customerRepository.create(customer);
-
-    const productRepository = new ProductRepository();
-    const product = new Product("123", "Product 1", 10);
-    await productRepository.create(product);
-
-    const ordemItem = new OrderItem(
-      "1",
-      product.name,
-      product.price,
-      product.id,
-      2
-    );
-
-    const order1 = new Order("1", "123", [ordemItem]);
-
     const ordemItem2 = new OrderItem(
       "2",
       product.name,
@@ -214,13 +157,13 @@ describe("Order repository test", () => {
 
     const order2 = new Order("2", "123", [ordemItem2]);
 
-    await orderRepository.create(order1);
+    await orderRepository.create(order);
     await orderRepository.create(order2);
 
     const orders = await orderRepository.findAll();
 
     expect(orders).toHaveLength(2);
-    expect(orders).toContainEqual(order1);
+    expect(orders).toContainEqual(order);
     expect(orders).toContainEqual(order2);
   });  
 
