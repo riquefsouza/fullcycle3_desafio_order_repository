@@ -2,7 +2,6 @@ import SendEmailWhenProductIsCreatedHandler from "../../product/event/handler/se
 import ProductCreatedEvent from "../../product/event/product-created.event";
 import EventDispatcher from "./event-dispatcher";
 import CustomerCreatedEvent from "../../customer/event/customer-created.event";
-//import CustomerChangeAddressEvent from "../../customer/event/customer-change-address.event";
 import EnviaConsoleLog1Handler from "../../customer/event/handler/envia-console-log1.handler";
 import EnviaConsoleLog2Handler from "../../customer/event/handler/envia-console-log2.handler";
 import EnviaConsoleLogHandler from "../../customer/event/handler/envia-console-log.handler";
@@ -153,7 +152,6 @@ describe("Domain events tests", () => {
 
     const spyEventLog1Handler = jest.spyOn(eventLog1Handler, "handle");
     const spyEventLog2Handler = jest.spyOn(eventLog2Handler, "handle");
-    //const spyEventLogHandler = jest.spyOn(eventLogHandler, "handle");
 
     expect(
       eventDispatcher.getEventHandlers["ProductCreatedEvent"][0]
@@ -196,13 +194,12 @@ describe("Domain events tests", () => {
     let customer = new Customer("1", "Customer 1");
     let address = new Address("Street 1", 123, "13330-250", "São Paulo");
 
-    //const customerChangeAddressEvent = new CustomerChangeAddressEvent(customer);
-
     customer.changeAddress(address);
 
-    //eventDispatcher.notify(customerChangeAddressEvent);
-
-    //expect(spyEventLogHandler).toHaveBeenCalled();
+    expect(customer.Address.street).toBe("Street 1");
+    expect(customer.Address.number).toBe(123);
+    expect(customer.Address.zip).toBe("13330-250");
+    expect(customer.Address.city).toBe("São Paulo");
 
   });
 });
